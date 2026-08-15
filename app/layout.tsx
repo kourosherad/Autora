@@ -6,9 +6,12 @@ import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const vazir = Vazirmatn({ subsets: ["arabic"], variable: "--font-vazir" });
+const siteUrl = process.env.AUTH_URL
+  ?? process.env.NEXTAUTH_URL
+  ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.AUTH_URL ?? process.env.NEXTAUTH_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(siteUrl),
   title: { default: "Autora — Smart Vehicle Maintenance", template: "%s — Autora" },
   description: "Keep your vehicle healthy, your history organized, and your maintenance on schedule.",
   applicationName: "Autora",

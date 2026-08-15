@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 enum Language {
@@ -73,51 +74,51 @@ model User {
 }
 
 model Vehicle {
-  id                String              @id @default(cuid())
-  userId            String              @map("user_id")
-  name              String
-  make              String
-  model             String
-  year              Int?
-  trim              String?
-  fuelType          String?             @map("fuel_type")
-  transmission      String?
-  plateNumber       String?             @map("plate_number")
-  vin               String?
-  currentOdometer   Int                 @default(0) @map("current_odometer")
-  imageUrl          String?             @map("image_url")
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
-  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  maintenanceItems  MaintenanceItem[]
+  id                 String              @id @default(cuid())
+  userId             String              @map("user_id")
+  name               String
+  make               String
+  model              String
+  year               Int?
+  trim               String?
+  fuelType           String?             @map("fuel_type")
+  transmission       String?
+  plateNumber        String?             @map("plate_number")
+  vin                String?
+  currentOdometer    Int                 @default(0) @map("current_odometer")
+  imageUrl           String?             @map("image_url")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  maintenanceItems   MaintenanceItem[]
   maintenanceRecords MaintenanceRecord[]
-  odometerRecords   OdometerRecord[]
-  expenses          Expense[]
-  reminders         Reminder[]
+  odometerRecords    OdometerRecord[]
+  expenses           Expense[]
+  reminders          Reminder[]
 
   @@index([userId])
   @@map("vehicles")
 }
 
 model MaintenanceItem {
-  id                    String               @id @default(cuid())
-  vehicleId             String               @map("vehicle_id")
-  name                  String
-  category              MaintenanceCategory  @default(OTHER)
-  description           String?
-  intervalKm            Int?                 @map("interval_km")
-  intervalDays          Int?                 @map("interval_days")
-  lastServiceDate       DateTime?             @db.Date @map("last_service_date")
-  lastServiceOdometer   Int?                  @map("last_service_odometer")
-  nextServiceDate       DateTime?             @db.Date @map("next_service_date")
-  nextServiceOdometer   Int?                  @map("next_service_odometer")
-  enabled               Boolean              @default(true)
-  notes                 String?
-  createdAt             DateTime             @default(now()) @map("created_at")
-  updatedAt             DateTime             @updatedAt @map("updated_at")
-  vehicle               Vehicle              @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  records               MaintenanceRecord[]
-  reminders             Reminder[]
+  id                  String              @id @default(cuid())
+  vehicleId           String              @map("vehicle_id")
+  name                String
+  category            MaintenanceCategory @default(OTHER)
+  description         String?
+  intervalKm          Int?                @map("interval_km")
+  intervalDays        Int?                @map("interval_days")
+  lastServiceDate     DateTime?           @map("last_service_date") @db.Date
+  lastServiceOdometer Int?                @map("last_service_odometer")
+  nextServiceDate     DateTime?           @map("next_service_date") @db.Date
+  nextServiceOdometer Int?                @map("next_service_odometer")
+  enabled             Boolean             @default(true)
+  notes               String?
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+  vehicle             Vehicle             @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  records             MaintenanceRecord[]
+  reminders           Reminder[]
 
   @@index([vehicleId, enabled])
   @@map("maintenance_items")
@@ -127,7 +128,7 @@ model MaintenanceRecord {
   id                String           @id @default(cuid())
   vehicleId         String           @map("vehicle_id")
   maintenanceItemId String?          @map("maintenance_item_id")
-  serviceDate       DateTime         @db.Date @map("service_date")
+  serviceDate       DateTime         @map("service_date") @db.Date
   odometer          Int
   cost              Decimal?         @db.Decimal(14, 0)
   provider          String?
@@ -147,7 +148,7 @@ model OdometerRecord {
   id         String   @id @default(cuid())
   vehicleId  String   @map("vehicle_id")
   odometer   Int
-  recordedAt DateTime @db.Date @map("recorded_at")
+  recordedAt DateTime @map("recorded_at") @db.Date
   notes      String?
   createdAt  DateTime @default(now()) @map("created_at")
   vehicle    Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
@@ -158,18 +159,18 @@ model OdometerRecord {
 }
 
 model Expense {
-  id                  String                @id @default(cuid())
-  vehicleId           String                @map("vehicle_id")
-  category            ExpenseCategory       @default(MAINTENANCE)
-  amount              Decimal               @db.Decimal(14, 0)
-  currency            String                @default("TOMAN")
-  date                DateTime              @db.Date
+  id                  String             @id @default(cuid())
+  vehicleId           String             @map("vehicle_id")
+  category            ExpenseCategory    @default(MAINTENANCE)
+  amount              Decimal            @db.Decimal(14, 0)
+  currency            String             @default("TOMAN")
+  date                DateTime           @db.Date
   description         String?
-  maintenanceRecordId String?               @unique @map("maintenance_record_id")
-  createdAt           DateTime              @default(now()) @map("created_at")
-  updatedAt           DateTime              @updatedAt @map("updated_at")
-  vehicle             Vehicle               @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  maintenanceRecord   MaintenanceRecord?    @relation(fields: [maintenanceRecordId], references: [id], onDelete: SetNull)
+  maintenanceRecordId String?            @unique @map("maintenance_record_id")
+  createdAt           DateTime           @default(now()) @map("created_at")
+  updatedAt           DateTime           @updatedAt @map("updated_at")
+  vehicle             Vehicle            @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  maintenanceRecord   MaintenanceRecord? @relation(fields: [maintenanceRecordId], references: [id], onDelete: SetNull)
 
   @@index([vehicleId, date])
   @@map("expenses")
@@ -180,7 +181,7 @@ model Reminder {
   vehicleId         String          @map("vehicle_id")
   maintenanceItemId String          @map("maintenance_item_id")
   reminderType      ReminderType    @map("reminder_type")
-  triggerDate       DateTime?       @db.Date @map("trigger_date")
+  triggerDate       DateTime?       @map("trigger_date") @db.Date
   triggerOdometer   Int?            @map("trigger_odometer")
   status            ReminderStatus  @default(PENDING)
   createdAt         DateTime        @default(now()) @map("created_at")
