@@ -27,7 +27,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const [locale, theme] = await Promise.all([getPublicLocale(), getPublicTheme()]);
   return (
     <html lang={locale} dir={locale === "fa" ? "rtl" : "ltr"} suppressHydrationWarning>
-      <body className={`${geist.variable} ${vazir.variable}`} style={{ "--font-sans": locale === "fa" ? "var(--font-vazir)" : "var(--font-geist)" } as React.CSSProperties}>
+      <body className={`${geist.variable} ${vazir.variable}`} style={{ "--font-sans": locale === "fa" ? "IRANSansWeb, IRANSans, var(--font-vazir)" : "var(--font-geist)" } as React.CSSProperties}>
         <ThemeProvider defaultTheme={theme}>{children}</ThemeProvider>
       </body>
     </html>
