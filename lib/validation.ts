@@ -10,6 +10,9 @@ const numericString = z.string().transform((value, context) => {
 const optionalNumber = z.string().optional().transform((value) => value?.trim() ? normalizeLocalizedNumber(value) : null);
 const optionalText = z.string().trim().max(500).optional().transform((value) => value || null);
 const dateOnly = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).transform((value) => new Date(`${value}T00:00:00.000Z`));
+const vehicleYear = optionalNumber
+  .transform((value) => value !== null && value >= 1200 && value <= 1600 ? value + 621 : value)
+  .refine((value) => value === null || (Number.isInteger(value) && value >= 1886 && value <= new Date().getFullYear() + 1));
 
 export const registerSchema = z.object({
   name: z.string().trim().min(2).max(80),
@@ -22,10 +25,9 @@ export const vehicleSchema = z.object({
   name: z.string().trim().min(2).max(80),
   make: z.string().trim().min(1).max(60),
   model: z.string().trim().min(1).max(60),
-  year: optionalNumber.refine((value) => value === null || (value >= 1886 && value <= new Date().getFullYear() + 1)),
+  year: vehicleYear,
   currentOdometer: numericString.refine((value) => Number.isInteger(value) && value >= 0 && value <= 10_000_000),
   plateNumber: optionalText,
-  vin: optionalText,
   useTemplate: z.string().optional().transform((value) => value === "on"),
 });
 
@@ -64,4 +66,3 @@ export const expenseSchema = z.object({
   date: dateOnly,
   description: optionalText,
 });
-

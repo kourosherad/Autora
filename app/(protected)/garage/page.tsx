@@ -24,14 +24,12 @@ export default async function GaragePage({ searchParams }: { searchParams: Promi
         <label className="field"><span className="label">{t.vehicleName}</span><input className="input" name="name" maxLength={80} placeholder="Peugeot 207" required /></label>
         <label className="field"><span className="label">{t.make}</span><input className="input" name="make" maxLength={60} required /></label>
         <label className="field"><span className="label">{t.model}</span><input className="input" name="model" maxLength={60} required /></label>
-        <label className="field"><span className="label">{t.year}</span><input className="input" name="year" inputMode="numeric" /></label>
+        <label className="field"><span className="label">{t.year}</span><input className="input" name="year" inputMode="numeric" placeholder={locale === "fa" ? "۱۴۰۳ یا ۲۰۲۴" : "2024"} /></label>
         <label className="field"><span className="label">{t.odometer}</span><input className="input" name="currentOdometer" inputMode="numeric" required /></label>
         <label className="field"><span className="label">{t.plate}</span><input className="input" name="plateNumber" /></label>
-        <label className="field"><span className="label">{t.vin}</span><input className="input" name="vin" /></label>
         <label className="checkbox" style={{ alignSelf: "end", paddingBlock: 12 }}><input type="checkbox" name="useTemplate" defaultChecked /><span><strong>{t.useTemplate}</strong><small className="muted" style={{ display: "block" }}>{t.starterDisclaimer}</small></span></label>
         <div className="form-actions"><button className="btn btn-accent" type="submit">{t.saveVehicle}</button></div>
       </form>
     </section>
   </main>;
 }
-

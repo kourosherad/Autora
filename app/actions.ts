@@ -54,7 +54,6 @@ export async function createVehicleAction(formData: FormData) {
         model: parsed.data.model,
         year: parsed.data.year,
         plateNumber: parsed.data.plateNumber,
-        vin: parsed.data.vin,
         currentOdometer: parsed.data.currentOdometer,
         odometerRecords: { create: { odometer: parsed.data.currentOdometer, recordedAt: today } },
       },
