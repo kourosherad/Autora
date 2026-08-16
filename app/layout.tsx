@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import { Geist, Vazirmatn } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { getPublicLocale, getPublicTheme } from "@/lib/i18n";
@@ -6,6 +7,15 @@ import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const vazir = Vazirmatn({ subsets: ["arabic"], variable: "--font-vazir" });
+const iranSans = localFont({
+  src: "./fonts/IRANSansWeb.woff",
+  variable: "--font-iransans",
+  weight: "400",
+  style: "normal",
+  display: "swap",
+  fallback: ["Tahoma", "Arial", "sans-serif"],
+  adjustFontFallback: false,
+});
 const siteUrl = process.env.AUTH_URL
   ?? process.env.NEXTAUTH_URL
   ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
@@ -27,7 +37,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const [locale, theme] = await Promise.all([getPublicLocale(), getPublicTheme()]);
   return (
     <html lang={locale} dir={locale === "fa" ? "rtl" : "ltr"} suppressHydrationWarning>
-      <body className={`${geist.variable} ${vazir.variable}`} style={{ "--font-sans": locale === "fa" ? "IRANSansWeb, IRANSans, var(--font-vazir)" : "var(--font-geist)" } as React.CSSProperties}>
+      <body className={`${geist.variable} ${vazir.variable} ${iranSans.variable}`} style={{ "--font-sans": locale === "fa" ? "var(--font-iransans), var(--font-vazir)" : "var(--font-geist)" } as React.CSSProperties}>
         <ThemeProvider defaultTheme={theme}>{children}</ThemeProvider>
       </body>
     </html>
